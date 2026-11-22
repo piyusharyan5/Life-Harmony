@@ -1,0 +1,810 @@
+/*font-family: "Schibsted Grotesk", sans-serif;*/
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #F0E2EE;
+}
+
+img {
+    max-width: 100%;
+}
+
+#header {
+    flex: none;
+    width: 100%;
+    height: 10%;
+    background-color: #F0E2EE;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#login {
+    display: none;
+}
+
+#login-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 22px;
+    margin: 10px 15px;
+    width: 6%;
+    min-width: 96px;
+    height: 40px;
+    background-color: #363636;
+    border-radius: 9999px;
+}
+
+h6 {
+    color: #F9F4F8;
+    font-family: "Schibsted Grotesk", sans-serif;
+    font-weight: 400;
+}
+
+#cart i {
+    color: #F9F4F8;
+}
+
+#cart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(32px, 2.7vw, 44px);
+    height: clamp(32px, 2.7vw, 44px);
+    background-color: #363636;
+    border-radius: 50%;
+    margin-top: 10px;
+    margin-right: 40px;
+}
+
+#heart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(32px, 2.7vw, 44px);
+    height: clamp(32px, 2.7vw, 44px);
+    background-color: #F9F4F8;
+    border-radius: 50%;
+    margin-top: 10px;
+    margin-right: 20px;
+}
+
+#heart i {
+    color: #363636;
+}
+
+#logo h5 {
+    font-family: "Schibsted Grotesk", sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    margin-top: 10px;
+    color: #363636;
+}
+
+#logo {
+    display: flex;
+    margin-right: auto;  
+    margin-left: 20px;    
+}
+
+#logo i {
+    margin-top: 8px;
+    margin-right: 5px;
+    font-size: 30px;
+}
+
+#hero {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F0E2EE;
+    top: 80px;
+    left: 20px;
+}
+
+#herotext h1 {
+    font-family: "Schibsted Grotesk", sans-serif;
+    color: #363636;
+    font-size: 65px;
+    font-weight: 550;
+}
+
+#hero-img {
+    --s: 1;
+    flex: 1 0 auto;
+    width: 100%;
+    height: 32rem;
+    position: sticky;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F0E2EE;
+}
+
+#bottle-stage {
+    height: 32rem;
+    aspect-ratio: 4 / 5;
+    cursor: grab;
+    touch-action: pan-y;
+    outline: none;
+}
+
+#bottle-stage.grabbing { cursor: grabbing; }
+
+#bottle-stage canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#bottle-stage img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#bottle-stage.ready > img { display: none; }
+
+#swatches {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 14px;
+}
+
+.swatch {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #F9F4F8;
+    background: var(--c);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.swatch:hover { transform: scale(1.15); }
+.swatch:focus-visible { outline: 2px solid #363636; outline-offset: 3px; }
+.swatch.active { box-shadow: 0 0 0 2px #363636; }
+
+#para p{
+    color: #363636;
+    position: absolute;
+    top: 190px;
+    left: 35px;
+    font-family: "Schibsted Grotesk", sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 20px;
+}
+
+#para2 p{
+    color: #363636;
+     position: absolute;
+    top: 190px;
+    right: 150px;
+    font-family: "Schibsted Grotesk", sans-serif;
+    font-weight: 100;
+    font-size: clamp(9px, 0.55vw, 12px);
+    line-height: 1.45;
+}
+
+#learn p{
+    color: #363636;
+    position: absolute;
+    bottom: 250px;
+    left: 35px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-family: "Schibsted Grotesk", sans-serif;
+    font-size: 12px;
+    font-weight: 550;
+}
+#bottle-stage {
+  position: relative;
+}
+
+.hotspot {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  z-index: 10;
+  pointer-events: auto;
+  cursor: pointer;
+  font-family: "Schibsted Grotesk", sans-serif;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.06));
+  transition: transform 0.2s ease;
+}
+
+.hotspot:hover {
+  transform: scale(1.04);
+}
+
+.hotspot-icon,
+.hotspot-label {
+  background-color: #ffffff;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.hotspot-icon {
+  width: 30px;
+  border-radius: 50%;
+  color: #e08e35;
+  font-size: 16px;
+  font-weight: 500;
+  z-index: 2;
+}
+
+.hotspot-label {
+  padding: 0 14px;
+  border-radius: 9999px;
+  color: #2d2d2d;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: -5px;
+}
+
+.hotspot-bottom-left .hotspot-label {
+  margin-left: 0;
+  margin-right: -5px;
+}
+
+.hotspot-top-right {
+  top: 28%;
+  left: calc(50% + 95px);
+}
+
+.hotspot-bottom-right {
+  top: calc(50% + 9rem * var(--s));
+  left: calc(50% + 85px);
+}
+
+.hotspot-bottom-left {
+  top: calc(50% + 6.125rem * var(--s));
+  right: calc(50% + 85px);
+}
+
+.hotspot-card {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  pointer-events: none;
+}
+
+.connector-line {
+  width: 95px;
+  height: 48px;
+  border-top: 1px solid rgba(255, 255, 255, 0.85);
+  border-right: 1px solid rgba(255, 255, 255, 0.85);
+}
+
+.preview-ring {
+  position: absolute;
+  top: 48px;
+  left: 95px;
+  transform: translateX(-50%);
+  width: 156px;
+  height: 156px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-ring::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: #ffffff;
+}
+
+.preview-circle {
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.preview-circle img {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+}
+
+#ShopBtn { 
+    position: absolute;
+    background-color: #363636;
+    bottom: 155px;
+    left: 40px;
+    width: 9rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+}
+
+#ShopBtn h5{
+    color: #F9F4F8;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 25px;
+    font-family: "Schibsted Grotesk", sans-serif ;
+    font-weight: 300;
+}
+
+#arrow i{
+    font-size: 20px;
+}
+
+#arrow {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F9F4F8;
+    border-radius: 50%;
+}
+
+@media (max-width: 1280px) {
+    #herotext h1 {
+        font-size: clamp(40px, 5.6vw, 65px);
+    }
+}
+
+@media (max-width: 1024px) {
+    html, body {
+        overflow-x: hidden;
+    }
+
+    body {
+        height: auto;
+        min-height: 100%;
+    }
+
+    #header {
+        height: auto;
+        min-height: 56px;
+    }
+
+    #login-btn {
+        width: auto;
+        min-width: 0;
+        height: 40px;
+        padding: 0 20px;
+        margin: 10px 10px;
+    }
+
+    #cart,
+    #heart {
+        width: 36px;
+        height: 36px;
+    }
+
+    #cart {
+        margin-right: 16px;
+    }
+
+    #heart {
+        margin-right: 10px;
+    }
+
+    #hero {
+        padding: 24px 16px 8px;
+    }
+
+    #herotext h1 {
+        font-size: 42px;
+        line-height: 1.1;
+        text-align: center;
+    }
+
+    #hero-img {
+        background:
+            radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.75) 0, rgba(255, 255, 255, 0) 52%),
+            #F0E2EE;
+        --s: 0.8125;
+        flex: none;
+        height: 26rem;
+        overflow-x: clip;
+    }
+
+    #bottle-stage {
+        height: 100%;
+    }
+
+    .hotspot-top-right {
+        left: calc(50% + 80px);
+    }
+
+    .hotspot-bottom-right {
+        left: calc(50% + 72px);
+    }
+
+    .hotspot-bottom-left {
+        right: calc(50% + 72px);
+    }
+
+    .connector-line {
+        width: 70px;
+        height: 40px;
+    }
+
+    .preview-ring {
+        top: 40px;
+        left: 70px;
+        width: 124px;
+        height: 124px;
+    }
+
+    .preview-circle {
+        width: 104px;
+        height: 104px;
+    }
+
+    #swatches {
+        position: static;
+        transform: none;
+        align-self: center;
+        margin-top: 20px;
+    }
+
+    #para {
+        align-self: center;
+        width: 100%;
+        max-width: 520px;
+        padding: 0 24px;
+        margin-top: 28px;
+    }
+
+    #para p {
+        position: static;
+        text-align: center;
+        font-size: 22px;
+        line-height: 30px;
+    }
+
+    #para br {
+        display: none;
+    }
+
+    #para2 {
+        width: calc(100% - 32px);
+        max-width: 520px;
+        align-self: center;
+        padding: 18px 24px;
+        margin-top: 20px;
+        background-color: rgba(255, 255, 255, 0.6);
+        border-radius: 20px;
+    }
+
+    #para2 p {
+        position: static;
+        text-align: center;
+        font-size: 14px;
+        line-height: 22px;
+        font-weight: 400;
+    }
+
+    #para2 br {
+        display: none;
+    }
+
+    #learn {
+        align-self: center;
+        margin-top: 14px;
+    }
+
+    #learn p {
+        position: static;
+        text-align: center;
+        font-size: 14px;
+        text-decoration: none;
+        border: 1.5px solid #363636;
+        border-radius: 9999px;
+        padding: 10px 24px;
+    }
+
+    #ShopBtn {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        align-self: center;
+        width: calc(100% - 32px);
+        max-width: 22rem;
+        margin: 22px 0 56px;
+    }
+
+    #ShopBtn h5 {
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+}
+
+@media (max-width: 700px) {
+    #logo {
+        margin-left: 12px;
+    }
+
+    #logo h5 {
+        white-space: nowrap;
+    }
+
+    #logo i {
+        font-size: 24px;
+        margin-top: 6px;
+    }
+
+    #cart,
+    #heart {
+        width: 32px;
+        height: 32px;
+    }
+
+    #cart {
+        margin-right: 10px;
+    }
+
+    #hero {
+        padding: 20px 14px 4px;
+    }
+
+    #herotext h1 {
+        font-size: 30px;
+    }
+
+    #hero-img {
+        --s: 0.656;
+        height: 21rem;
+    }
+
+    .hotspot-icon,
+    .hotspot-label {
+        height: 24px;
+    }
+
+    .hotspot-icon {
+        width: 24px;
+        font-size: 13px;
+    }
+
+    .hotspot-label {
+        padding: 0 9px;
+        font-size: 10px;
+    }
+
+    .hotspot-top-right {
+        left: calc(50% + 46px);
+    }
+
+    .hotspot-bottom-right {
+        left: calc(50% + 42px);
+    }
+
+    .hotspot-bottom-left {
+        right: calc(50% + 42px);
+    }
+
+    .hotspot-card {
+        display: none;
+    }
+
+    #swatches {
+        gap: 10px;
+    }
+
+    .swatch {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media (max-width: 400px) {
+    #hero-img {
+        --s: 0.594;
+        height: 19rem;
+    }
+
+    .hotspot-label {
+        padding: 0 8px;
+        font-size: 9px;
+    }
+
+    .hotspot-bottom-left {
+        right: calc(50% + 32px);
+    }
+
+    .hotspot-bottom-right {
+        left: calc(50% + 32px);
+    }
+
+    .hotspot-top-right {
+        left: calc(50% + 36px);
+    }
+}
+
+@media (min-width: 1600px) {
+    :root {
+        --k: 1.35;
+    }
+
+    #logo i {
+        font-size: calc(30px * var(--k));
+        margin-top: 6px;
+    }
+
+    #logo h5 {
+        font-size: calc(11px * var(--k));
+    }
+
+    #heart,
+    #cart {
+        width: calc(32px * var(--k));
+        height: calc(32px * var(--k));
+    }
+
+    #heart {
+        margin-right: calc(20px * var(--k));
+    }
+
+    #cart {
+        margin-right: calc(40px * var(--k));
+    }
+
+    #heart i,
+    #cart i {
+        font-size: calc(14px * var(--k));
+    }
+
+    #login-btn {
+        height: calc(34px * var(--k));
+        padding: 0 calc(22px * var(--k));
+    }
+
+    h6 {
+        font-size: calc(10.72px * var(--k));
+    }
+
+    #herotext h1 {
+        font-size: calc(65px + (var(--k) - 1) * 40px);
+    }
+
+    #hero-img {
+        --s: var(--k);
+        height: calc(32rem * var(--k));
+    }
+
+    #bottle-stage {
+        height: calc(32rem * var(--k));
+    }
+
+    #para p {
+        font-size: calc(15px * var(--k));
+        line-height: calc(20px * var(--k));
+        left: calc(35px * var(--k));
+    }
+
+    #para2 p {
+        font-size: calc(9px * var(--k));
+        right: calc(150px * var(--k));
+    }
+
+    #learn p {
+        font-size: calc(12px * var(--k));
+        left: calc(35px * var(--k));
+    }
+
+    #ShopBtn {
+        left: calc(40px * var(--k));
+        width: calc(9rem * var(--k));
+        height: calc(2.5rem * var(--k));
+    }
+
+    #ShopBtn h5 {
+        font-size: calc(13.28px * var(--k));
+        left: calc(25px * var(--k));
+    }
+
+    #arrow {
+        top: calc(4px * var(--k));
+        right: calc(4px * var(--k));
+        width: calc(32px * var(--k));
+        height: calc(32px * var(--k));
+    }
+
+    #arrow i {
+        font-size: calc(20px * var(--k));
+    }
+
+    .swatch {
+        width: calc(26px * var(--k));
+        height: calc(26px * var(--k));
+    }
+
+    #swatches {
+        gap: calc(14px * var(--k));
+    }
+
+    .hotspot-icon,
+    .hotspot-label {
+        height: calc(30px * var(--k));
+    }
+
+    .hotspot-icon {
+        width: calc(30px * var(--k));
+        font-size: calc(16px * var(--k));
+    }
+
+    .hotspot-label {
+        padding: 0 calc(14px * var(--k));
+        font-size: calc(12px * var(--k));
+    }
+
+    .hotspot-top-right {
+        left: calc(50% + 95px * var(--k));
+    }
+
+    .hotspot-bottom-right {
+        left: calc(50% + 85px * var(--k));
+    }
+
+    .hotspot-bottom-left {
+        right: calc(50% + 85px * var(--k));
+    }
+
+    .connector-line {
+        width: calc(95px * var(--k));
+        height: calc(48px * var(--k));
+    }
+
+    .preview-ring {
+        top: calc(48px * var(--k));
+        left: calc(95px * var(--k));
+        width: calc(156px * var(--k));
+        height: calc(156px * var(--k));
+    }
+
+    .preview-circle {
+        width: calc(132px * var(--k));
+        height: calc(132px * var(--k));
+    }
+}
+
+@media (min-width: 1900px) {
+    :root {
+        --k: 1.55;
+    }
+}
