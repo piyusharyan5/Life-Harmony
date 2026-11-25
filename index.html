@@ -95,10 +95,281 @@
       <div id="arrow"><i class="ri-arrow-right-line"></i></div>
       
     </div>
+
+    <section id="arrivals">
+      <div class="arrivals-head">
+        <div class="arrivals-title">
+          <h2>NEW ARRIVALS</h2>
+          <h3>Shop now and fuel<br />your body with the best!</h3>
+        </div>
+
+        <div class="arrivals-side">
+          <div class="arrivals-tabs" role="tablist">
+            <button class="tab" role="tab" aria-selected="false">Vitamins</button>
+            <button class="tab active" role="tab" aria-selected="true">Dietary supplements</button>
+          </div>
+          <p>
+            Whether you're looking to strengthen your immune system, enhance your
+            energy levels, or promote overall wellness, we've got you covered.
+          </p>
+          <a href="#" class="view-all">View all products</a>
+        </div>
+      </div>
+
+      <div class="product-grid">
+        <!-- To add an image: replace the placeholder text inside .img-holder with
+             <img src="Images/your-file.png" alt="Product name" /> -->
+        <article class="product-card">
+          <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
+          <img src="Images/Cart01.png" alt="Omega-3 Fish Oil">
+          <div class="product-info">
+            <h4>Omega -3 Fish oil</h4>
+            <p>Original flavour</p>
+          </div>
+          <div class="product-buy">
+            <span class="price">$32.00</span>
+            <button class="add-cart">Add to cart</button>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
+          <img src="Images/Cart02.png" alt="Vitamin D3">
+          <div class="product-info">
+            <h4>Vitamin D3+K2</h4>
+            <p>With Coconut MCT Oil</p>
+          </div>
+          <div class="product-buy">
+            <span class="price">$45.99</span>
+            <button class="add-cart">Add to cart</button>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
+          <img src="Images/Cart03.png" alt="Marine Collagen">
+          <div class="product-info">
+            <h4>Marine Collagen Peptides</h4>
+            <p>34 Servings</p>
+          </div>
+          <div class="product-buy">
+            <span class="price">$12.99</span>
+            <button class="add-cart">Add to cart</button>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
+         <img src="Images/Cart04.png" alt="Dietary">
+          <div class="product-info">
+            <h4>A set of Dietary supplements</h4>
+            <p>D3+K2, Collagen Peptides</p>
+          </div>
+          <div class="product-buy">
+            <span class="price">$21.00</span>
+            <button class="add-cart">Add to cart</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== Great offer ===== -->
+    <section id="offer">
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <span>GREAT OFFER &middot; GREAT OFFER &middot; GREAT OFFER &middot; GREAT OFFER &middot; </span>
+          <span>GREAT OFFER &middot; GREAT OFFER &middot; GREAT OFFER &middot; GREAT OFFER &middot; </span>
+        </div>
+      </div>
+
+      <div class="offer-body">
+        <div class="offer-info">
+          <h3>A set of Dietary supplements</h3>
+          <p class="offer-sub">Vitamin D3+K2 + Organic Collagen Peptides</p>
+          <span class="old-price">$45.99</span>
+          <span class="new-price">$38.99</span>
+          <div class="offer-actions">
+            <button class="add-cart">Add to cart</button>
+            <button class="fav fav-static" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
+          </div>
+        </div>
+
+        <!-- 3D bottles (offer3d.js). The photo is only shown if WebGL is unavailable. -->
+        <div class="offer-arch" id="offer-stage" aria-label="Vitamin D3+K2 and Organic Collagen Peptides bottles">
+          <img class="offer-fallback" src="Images/offer-duo.png" alt="Vitamin D3+K2 and Organic Collagen Peptides bottles" />
+        </div>
+
+        <div class="offer-side">
+          <p>
+            Whether you're an athlete, a busy professional, or just looking to boost
+            your overall health, we have the perfect set for you.
+          </p>
+          <p>Buying a set of supplements is profitable and convenient!</p>
+          <a href="#" class="view-all">View all sets</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Pick of the month ===== -->
+    <section id="pick">
+      <div class="pick-head">
+        <h2>PICK OF THE<br />MONTH</h2>
+        <div class="pick-side">
+          <p>
+            Every month we show you the best-selling products in our store so you
+            can stay up to date with trends.
+          </p>
+          <div class="pager">
+            <button class="pager-btn" id="pickPrev" aria-label="Previous"><i class="ri-arrow-left-s-line"></i></button>
+            <span class="pager-count"><b id="pickNow">1</b>/<span id="pickTotal">1</span></span>
+            <button class="pager-btn" id="pickNext" aria-label="Next"><i class="ri-arrow-right-s-line"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pick-track" id="pickTrack">
+        <!-- Image spaces: replace each label with
+             <img src="Images/Pick01.png" alt="Product name" /> -->
+        <article class="product-card pick-item">
+          <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
+          <div class="img-holder"><span>Image 1</span></div>
+          <div class="product-info">
+            <h4>Organic Collagen Peptides</h4>
+            <p>Chocolate flavour</p>
+          </div>
+          <div class="product-buy">
+            <span class="price">$45.99</span>
+            <button class="add-cart">Add to cart</button>
+          </div>
+        </article>
+
+        <article class="product-card pick-item">
+          <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
+          <div class="img-holder"><span>Image 2</span></div>
+          <div class="product-info">
+            <h4>Hydrate Electrolytes</h4>
+            <p>Cherry Pomegranate</p>
+          </div>
+          <div class="product-buy">
+            <span class="price">$35.95</span>
+            <button class="add-cart">Add to cart</button>
+          </div>
+        </article>
+
+        <a href="#" class="pick-item view-circle" aria-label="View all products">
+          <svg viewBox="0 0 200 200" class="circle-text" aria-hidden="true">
+            <defs>
+              <path id="circlePath" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" />
+            </defs>
+            <text>
+              <textPath href="#circlePath" textLength="480" lengthAdjust="spacing">View all products &#8226; View all products &#8226; View all products &#8226; </textPath>
+            </text>
+          </svg>
+          <i class="ri-arrow-right-line"></i>
+        </a>
+
+        <article class="product-card pick-item">
+          <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
+          <div class="img-holder"><span>Image 3</span></div>
+          <div class="product-info">
+            <h4>Energy&amp;Immunity</h4>
+            <p>Premium dietary supplement</p>
+          </div>
+          <div class="product-buy">
+            <span class="price">$26.80</span>
+            <button class="add-cart">Add to cart</button>
+          </div>
+        </article>
+
+        <article class="product-card pick-item">
+          <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
+          <div class="img-holder"><span>Image 4</span></div>
+          <div class="product-info">
+            <h4>Omega -3 Fish oil</h4>
+            <p>Original flavour</p>
+          </div>
+          <div class="product-buy">
+            <span class="price">$32.00</span>
+            <button class="add-cart">Add to cart</button>
+          </div>
+        </article>
+
+        <article class="product-card pick-item">
+          <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
+          <div class="img-holder"><span>Image 5</span></div>
+          <div class="product-info">
+            <h4>Marine Collagen Peptides</h4>
+            <p>34 Servings</p>
+          </div>
+          <div class="product-buy">
+            <span class="price">$12.99</span>
+            <button class="add-cart">Add to cart</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <script>
+      document.querySelectorAll("#offer .fav, #pick .fav").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          btn.classList.toggle("on");
+        });
+      });
+
+      (function () {
+        var track = document.getElementById("pickTrack");
+        if (!track) return;
+        var items = track.querySelectorAll(".pick-item");
+        var now = document.getElementById("pickNow");
+        var total = document.getElementById("pickTotal");
+
+        function step() {
+          if (items.length < 2) return track.clientWidth;
+          return items[1].offsetLeft - items[0].offsetLeft;
+        }
+        function visible() {
+          return Math.max(1, Math.round(track.clientWidth / step()));
+        }
+        function pages() {
+          return Math.max(1, items.length - visible() + 1);
+        }
+        function update() {
+          total.textContent = pages();
+          var i = Math.round(track.scrollLeft / step()) + 1;
+          now.textContent = Math.min(pages(), Math.max(1, i));
+        }
+        document.getElementById("pickPrev").addEventListener("click", function () {
+          track.scrollBy({ left: -step(), behavior: "smooth" });
+        });
+        document.getElementById("pickNext").addEventListener("click", function () {
+          track.scrollBy({ left: step(), behavior: "smooth" });
+        });
+        track.addEventListener("scroll", update);
+        window.addEventListener("resize", update);
+        update();
+      })();
+    </script>
+
+    <script>
+      document.querySelectorAll("#arrivals .tab").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          document.querySelectorAll("#arrivals .tab").forEach(function (t) {
+            t.classList.remove("active");
+            t.setAttribute("aria-selected", "false");
+          });
+          tab.classList.add("active");
+          tab.setAttribute("aria-selected", "true");
+        });
+      });
+      document.querySelectorAll("#arrivals .fav").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          btn.classList.toggle("on");
+        });
+      });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.155.0/three.min.js"></script>
     <script src="bottle.js"></script>
     <script src="script.js"></script>
+    <script src="offer3d.js"></script>
   </body>
 </html>
-
-

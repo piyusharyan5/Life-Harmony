@@ -425,5 +425,5 @@ document.querySelectorAll(".hotspot").forEach((hotspot) => {
     const isOpen = card.style.display !== "none";
     card.style.display = isOpen ? "none" : "block";
     icon.textContent = isOpen ? "+" : "−";
-  });
+  });   
 });
