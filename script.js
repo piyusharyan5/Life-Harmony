@@ -427,3 +427,64 @@ document.querySelectorAll(".hotspot").forEach((hotspot) => {
     icon.textContent = isOpen ? "+" : "−";
   });   
 });
+
+document.getElementById("newsletter").addEventListener("submit", function (e) {
+        e.preventDefault();
+        document.getElementById("newsletterMsg").textContent = "Thanks for subscribing!";
+        e.target.reset();
+      });
+
+      document.querySelectorAll("#offer .fav, #pick .fav").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          btn.classList.toggle("on");
+        });
+      });
+
+      (function () {
+        var track = document.getElementById("pickTrack");
+        if (!track) return;
+        var items = track.querySelectorAll(".pick-item");
+        var now = document.getElementById("pickNow");
+        var total = document.getElementById("pickTotal");
+
+        function step() {
+          if (items.length < 2) return track.clientWidth;
+          return items[1].offsetLeft - items[0].offsetLeft;
+        }
+        function visible() {
+          return Math.max(1, Math.round(track.clientWidth / step()));
+        }
+        function pages() {
+          return Math.max(1, items.length - visible() + 1);
+        }
+        function update() {
+          total.textContent = pages();
+          var i = Math.round(track.scrollLeft / step()) + 1;
+          now.textContent = Math.min(pages(), Math.max(1, i));
+        }
+        document.getElementById("pickPrev").addEventListener("click", function () {
+          track.scrollBy({ left: -step(), behavior: "smooth" });
+        });
+        document.getElementById("pickNext").addEventListener("click", function () {
+          track.scrollBy({ left: step(), behavior: "smooth" });
+        });
+        track.addEventListener("scroll", update);
+        window.addEventListener("resize", update);
+        update();
+      })();
+
+      document.querySelectorAll("#arrivals .tab").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          document.querySelectorAll("#arrivals .tab").forEach(function (t) {
+            t.classList.remove("active");
+            t.setAttribute("aria-selected", "false");
+          });
+          tab.classList.add("active");
+          tab.setAttribute("aria-selected", "true");
+        });
+      });
+      document.querySelectorAll("#arrivals .fav").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          btn.classList.toggle("on");
+        });
+      });

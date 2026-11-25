@@ -1,8 +1,7 @@
 /* ---------- Offer section: two 3D bottles swinging in the air ----------
-   Built the same way as the hero bottle (script.js): a lathe-turned plastic
-   bottle with a ridged cap, and a label wrapped round it. The label images
-   (Images/label-blue.png, Images/label-brown.png) are the front and back photos
-   unwrapped so you see the real front design and, as it turns, the back panel. */
+   Lathe-turned plastic bottles with ridged caps and printed labels wrapped
+   round them (Images/label-blue.png, Images/label-brown.png). Lit like a small
+   photo studio: soft key light, fill, rim light and reflections. */
 (function () {
     const stage = document.querySelector("#offer-stage");
     if (!stage || !window.THREE) return;
@@ -13,7 +12,11 @@
     } catch (err) {
         return; // no WebGL: the plain photo stays visible
     }
-    renderer.setPixelRatio(Math.min(3, Math.max(2, (window.devicePixelRatio || 1) + 0.5)));
+    renderer.setPixelRatio(Math.min(3, Math.max(2.5, (window.devicePixelRatio || 1) * 1.5)));   // render big, browser shrinks it: keeps the label sharp
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.shadowMap.enabled = false;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     stage.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -21,12 +24,12 @@
     camera.position.set(0, 0.2, 15);
     camera.lookAt(0, 0.2, 0);
 
-    /* A small photo studio for the plastic to reflect */
+    /* Reflections: a dim room with bright soft-boxes */
     function buildEnvironment() {
         const env = new THREE.Scene();
         env.add(new THREE.Mesh(
             new THREE.SphereGeometry(20, 32, 16),
-            new THREE.MeshBasicMaterial({ color: new THREE.Color(0.55, 0.55, 0.58), side: THREE.BackSide })
+            new THREE.MeshBasicMaterial({ color: new THREE.Color(0.42, 0.40, 0.45), side: THREE.BackSide })
         ));
         const box = (w, h, x, y, z, power) => {
             const m = new THREE.Mesh(
@@ -37,16 +40,39 @@
             m.lookAt(0, 0, 0);
             env.add(m);
         };
-        box(14, 8, 0, 12, 4, 2.7);
-        box(5, 14, -11, 2, 6, 3.2);
-        box(3, 14, 12, 2, -2, 2.4);
-        box(10, 4, 0, -3, 12, 1.0);
+        box(14, 8, 0, 12, 4, 3.0);      // top
+        box(5, 14, -11, 2, 6, 4.0);     // tall left strip: long vertical highlight
+        box(3, 14, 12, 2, -2, 2.6);     // right rim light
+        box(10, 4, 0, -3, 12, 0.9);     // low front fill
         const pmrem = new THREE.PMREMGenerator(renderer);
         const tex = pmrem.fromScene(env, 0.03).texture;
         pmrem.dispose();
         return tex;
     }
     scene.environment = buildEnvironment();
+
+    /* Lights */
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xe3cfe1, 0.35));
+
+    const key = new THREE.DirectionalLight(0xfff4ea, 1.25);       // warm key, casts the shadow
+    key.position.set(-5, 9, 10);
+    key.castShadow = false;
+    key.shadow.mapSize.set(2048, 2048);
+    key.shadow.camera.left = -6; key.shadow.camera.right = 6;
+    key.shadow.camera.top = 7; key.shadow.camera.bottom = -7;
+    key.shadow.camera.near = 1; key.shadow.camera.far = 40;
+    key.shadow.bias = -0.0004;
+    key.shadow.radius = 6;
+    scene.add(key);
+
+    const fill = new THREE.DirectionalLight(0xdde6ff, 0.35);      // cool fill
+    fill.position.set(7, 2, 8);
+    scene.add(fill);
+
+    const rim = new THREE.DirectionalLight(0xffffff, 0.5);        // edge light from behind
+    rim.position.set(3, 4, -9);
+    scene.add(rim);
+
 
     /* ----- Bottle shape (units: body radius = 1) ----- */
     const BODY_TOP = 2.727, SHOULDER_TOP = 3.117;
@@ -56,13 +82,13 @@
 
     function bodyProfile() {
         const pts = [];
-        const f = 0.22;                                        // base fillet
+        const f = 0.22;
         pts.push(new THREE.Vector2(0, 0));
         for (let a = Math.PI / 2; a >= 0; a -= Math.PI / 24) {
             pts.push(new THREE.Vector2(1 - f + f * Math.cos(a), f - f * Math.sin(a)));
         }
         pts.push(new THREE.Vector2(1, BODY_TOP));
-        for (let i = 1; i <= 16; i++) {                        // rounded shoulder
+        for (let i = 1; i <= 16; i++) {
             const t = i / 16;
             pts.push(new THREE.Vector2(
                 0.714 + 0.286 * Math.pow(Math.cos(t * Math.PI / 2), 0.9),
@@ -70,8 +96,8 @@
             ));
         }
         pts.push(new THREE.Vector2(0.714, 3.16));
-        pts.push(new THREE.Vector2(0.66, 3.19));               // collar
-        pts.push(new THREE.Vector2(0.585, NECK_LO));           // neck
+        pts.push(new THREE.Vector2(0.66, 3.19));
+        pts.push(new THREE.Vector2(0.585, NECK_LO));
         pts.push(new THREE.Vector2(0.585, NECK_HI));
         return pts;
     }
@@ -104,39 +130,73 @@
         geo.computeVertexNormals();
     }
 
-    function loadTexture(src) {
-        const t = new THREE.TextureLoader().load(src, () => { api.loaded++; if (api.loaded >= 2) stage.classList.add("ready"); });
-        t.colorSpace = THREE.SRGBColorSpace;
-        t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    /* A fine grain so the plastic is not perfectly smooth (reads as real moulded plastic) */
+    function grainTexture() {
+        const c = document.createElement("canvas");
+        c.width = c.height = 256;
+        const g = c.getContext("2d");
+        const d = g.createImageData(256, 256);
+        for (let i = 0; i < d.data.length; i += 4) {
+            const v = 128 + (Math.random() - 0.5) * 60;
+            d.data[i] = d.data[i + 1] = d.data[i + 2] = v;
+            d.data[i + 3] = 255;
+        }
+        g.putImageData(d, 0, 0);
+        const t = new THREE.CanvasTexture(c);
+        t.wrapS = t.wrapT = THREE.RepeatWrapping;
+        t.repeat.set(10, 10);
         return t;
     }
+    const grain = grainTexture();
+
     const api = { loaded: 0 };
+    function loadTexture(src) {
+        const done = () => { api.loaded++; if (api.loaded >= 2) stage.classList.add("ready"); };
+        const t = new THREE.TextureLoader().load(src, done, undefined, () => {
+            console.error("offer3d.js: could not load '" + src + "'. Check that the file is in your Images folder and the page is opened through a local server.");
+            done();
+        });
+        t.colorSpace = THREE.SRGBColorSpace;
+        t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        t.minFilter = THREE.LinearMipmapLinearFilter;
+        t.generateMipmaps = true;
+        return t;
+    }
 
     function makeBottle(labelSrc, capColour) {
         const g = new THREE.Group();
 
-        const bodyGeo = new THREE.LatheGeometry(bodyProfile(), 128);
         const plastic = new THREE.MeshPhysicalMaterial({
-            color: 0xf4f4f6, roughness: 0.38, clearcoat: 0.5, clearcoatRoughness: 0.28,
+            color: 0xf3f3f5, roughness: 0.34, clearcoat: 0.6, clearcoatRoughness: 0.22,
+            bumpMap: grain, bumpScale: 0.35, envMapIntensity: 1.15,
         });
-        g.add(new THREE.Mesh(bodyGeo, plastic));
+        g.add(new THREE.Mesh(new THREE.LatheGeometry(bodyProfile(), 128), plastic));
 
         const capGeo = new THREE.LatheGeometry(capProfile(), 360);
         makeRidged(capGeo, CAP_LO + 0.03, CAP_HI - 0.06, 0.014);
         const capMat = new THREE.MeshPhysicalMaterial({
-            color: capColour, roughness: 0.45, clearcoat: 0.3, clearcoatRoughness: 0.35, envMapIntensity: 1.1,
+            color: capColour, roughness: 0.42, clearcoat: 0.35, clearcoatRoughness: 0.3, envMapIntensity: 1.2,
         });
         g.add(new THREE.Mesh(capGeo, capMat));
 
+        /* Printed label: the photo supplies the print, lights add the shape.
+           Half the print is emissive so colours stay true, half is lit so it curves. */
         const labelGeo = new THREE.CylinderGeometry(1.004, 1.004, LABEL.hi - LABEL.lo, 256, 1, true, -Math.PI, Math.PI * 2);
+        const map = loadTexture(labelSrc);
         const labelMat = new THREE.MeshPhysicalMaterial({
-            map: loadTexture(labelSrc), roughness: 0.5, clearcoat: 0.25, clearcoatRoughness: 0.4,
+            map: map, color: new THREE.Color(0.5, 0.5, 0.5),
+            emissive: 0xffffff, emissiveMap: map, emissiveIntensity: 0.6,
+            roughness: 0.55, clearcoat: 0.08, clearcoatRoughness: 0.5, envMapIntensity: 0.35,
+            toneMapped: false,
         });
         const label = new THREE.Mesh(labelGeo, labelMat);
         label.position.y = (LABEL.lo + LABEL.hi) / 2;
         g.add(label);
 
-        g.position.y = -CAP_HI / 2;                      // centre each bottle on its own middle
+        g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+        label.receiveShadow = false;                     // avoids striping where it touches the body
+
+        g.position.y = -CAP_HI / 2;
         const holder = new THREE.Group();
         holder.add(g);
         return holder;
@@ -147,7 +207,7 @@
     blue.position.set(-1.05, 0, 0);
     brown.position.set(1.2, -0.1, 0.25);
     brown.scale.setScalar(1.05);
-    brown.rotation.z = -0.13;                            // leans like in the photo
+    brown.rotation.z = -0.13;
     const baseLean = brown.rotation.z;
 
     /* The pair hangs from a point above and swings like a pendulum */
@@ -159,24 +219,6 @@
     hang.add(blue, brown);
     swing.add(hang);
     scene.add(swing);
-
-    /* Soft shadow on the floor that moves with the swing */
-    const sc = document.createElement("canvas");
-    sc.width = sc.height = 256;
-    const sg = sc.getContext("2d");
-    const grad = sg.createRadialGradient(128, 128, 0, 128, 128, 128);
-    grad.addColorStop(0, "rgba(54,30,60,0.38)");
-    grad.addColorStop(0.5, "rgba(54,30,60,0.16)");
-    grad.addColorStop(1, "rgba(54,30,60,0)");
-    sg.fillStyle = grad;
-    sg.fillRect(0, 0, 256, 256);
-    const shadow = new THREE.Mesh(
-        new THREE.PlaneGeometry(5.6, 5.6),
-        new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), transparent: true, depthWrite: false })
-    );
-    shadow.rotation.x = -Math.PI / 2;
-    shadow.position.set(0, -2.75, 0);
-    scene.add(shadow);
 
     new ResizeObserver(() => {
         const w = stage.clientWidth, h = stage.clientHeight;
@@ -211,23 +253,19 @@
         const t = clock.getElapsedTime();
         const k = reduceMotion.matches ? 0 : 1;
 
-        if (!dragging) {                                  // inertia, then ease back to rest
+        if (!dragging) {
             drag += dragVel;
             dragVel *= 0.94;
             drag *= 0.985;
         }
 
-        swing.rotation.z = Math.sin(t * 1.15) * 0.11 * k;                 // pendulum
+        swing.rotation.z = Math.sin(t * 1.15) * 0.11 * k;
         swing.rotation.x = Math.sin(t * 0.8 + 1.2) * 0.025 * k;
-        swing.position.y = PIVOT_Y + Math.sin(t * 1.6) * 0.06 * k;        // gentle float
+        swing.position.y = PIVOT_Y + Math.sin(t * 1.6) * 0.06 * k;
 
-        blue.rotation.y = Math.sin(t * 0.7) * 0.5 * k + drag;             // each bottle turns a little
+        blue.rotation.y = Math.sin(t * 0.7) * 0.5 * k + drag;
         brown.rotation.y = Math.sin(t * 0.7 + 1.4) * 0.5 * k + drag;
         brown.rotation.z = baseLean + Math.sin(t * 1.15 + 0.6) * 0.03 * k;
-
-        const sway = Math.sin(t * 1.15);
-        shadow.position.x = sway * 0.5 * k;
-        shadow.material.opacity = 0.85 - Math.abs(sway) * 0.2 * k;
 
         renderer.render(scene, camera);
         requestAnimationFrame(render);

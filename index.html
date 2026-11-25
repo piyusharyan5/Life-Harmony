@@ -16,7 +16,28 @@
       rel="stylesheet"
     />
   </head>
-  <body>
+  <body class="is-loading">
+    <div id="loader" role="status" aria-label="Loading">
+      <canvas id="loader-canvas"></canvas>
+
+      <div class="loader-chrome" aria-hidden="true">
+        <svg class="loader-frame"><rect x="0" y="0" width="100%" height="100%" rx="22" ry="22" pathLength="1" /></svg>
+        <span class="loader-eyebrow">Premium Innovation</span>
+        <span class="loader-tagline">Healthcare.<br />Real results.</span>
+        <div class="loader-meter">
+          <div class="loader-status">
+            <span class="loader-idx"><b id="loader-idx">01</b>/05</span>
+            <span class="loader-word" id="loader-word">Vitamin D3 + K2</span>
+          </div>
+          <div class="loader-pill"><i></i></div>
+        </div>
+      </div>
+
+      <div class="loader-brand"><i class="ri-heart-pulse-fill"></i><span>Life<br />Harmony</span></div>
+      <div class="loader-count"><span id="loader-pct">0</span><small>%</small></div>
+      <button id="loader-skip" type="button">Skip</button>
+    </div>
+
     <div id="header">
       <div id="logo">
         <i class="ri-heart-pulse-fill"></i>
@@ -232,7 +253,7 @@
              <img src="Images/Pick01.png" alt="Product name" /> -->
         <article class="product-card pick-item">
           <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
-          <div class="img-holder"><span>Image 1</span></div>
+          <img src="Images/Cart05.png" alt="Cart05">
           <div class="product-info">
             <h4>Organic Collagen Peptides</h4>
             <p>Chocolate flavour</p>
@@ -245,7 +266,7 @@
 
         <article class="product-card pick-item">
           <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
-          <div class="img-holder"><span>Image 2</span></div>
+          <img src="Images/Cart06.png" alt="Cart06">
           <div class="product-info">
             <h4>Hydrate Electrolytes</h4>
             <p>Cherry Pomegranate</p>
@@ -270,7 +291,7 @@
 
         <article class="product-card pick-item">
           <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
-          <div class="img-holder"><span>Image 3</span></div>
+          <img src="Images/Cart07.png" alt="cart07">
           <div class="product-info">
             <h4>Energy&amp;Immunity</h4>
             <p>Premium dietary supplement</p>
@@ -283,7 +304,7 @@
 
         <article class="product-card pick-item">
           <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
-          <div class="img-holder"><span>Image 4</span></div>
+          <img src="Images/Cart01.png" alt="Omega">
           <div class="product-info">
             <h4>Omega -3 Fish oil</h4>
             <p>Original flavour</p>
@@ -296,7 +317,7 @@
 
         <article class="product-card pick-item">
           <button class="fav" aria-label="Add to favourites"><i class="ri-poker-hearts-line"></i></button>
-          <div class="img-holder"><span>Image 5</span></div>
+          <img src="Images/Cart03.png" alt="Cart03">
           <div class="product-info">
             <h4>Marine Collagen Peptides</h4>
             <p>34 Servings</p>
@@ -308,6 +329,123 @@
         </article>
       </div>
     </section>
+
+    <!-- Shape used to cut the large blog image -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <defs>
+        <clipPath id="blogClip" clipPathUnits="objectBoundingBox">
+          <path d="M0.07534,0.00000 L0.61644,0.00000 A0.04452 0.03881 0 0 1 0.66096 0.03881 L0.66096,0.05075 A0.04452 0.03881 0 0 0 0.70548 0.08955 L0.92466,0.08955 A0.07534 0.06567 0 0 1 1.00000 0.15522 L1.00000,0.93433 A0.07534 0.06567 0 0 1 0.92466 1.00000 L0.34452,1.00000 A0.04452 0.03881 0 0 1 0.30000 0.96119 L0.30000,0.94925 A0.04452 0.03881 0 0 0 0.25548 0.91045 L0.07534,0.91045 A0.07534 0.06567 0 0 1 0.00000 0.84478 L0.00000,0.06567 A0.07534 0.06567 0 0 1 0.07534 0.00000 Z" />
+        </clipPath>
+      </defs>
+    </svg>
+
+    <!-- ===== Our blog ===== -->
+    <section id="blog">
+      <h2 class="blog-title">OUR BLOG</h2>
+
+      <div class="blog-grid">
+        <div class="blog-left">
+          <!-- Image spaces: replace each label with
+               <img src="Images/blog01.png" alt="..." /> -->
+          <figure class="blog-img blog-img-1">
+            <img src="Images/Blog01.png" alt="Lemons, orange slices and a bottle of vitamin capsules on a pale surface" loading="lazy" decoding="async" />
+          </figure>
+          <p>
+            Every month we show you the best-selling products in our store so you
+            can stay up to date with trends.
+          </p>
+          <a href="#" class="view-all">Go to Blog</a>
+        </div>
+
+        <figure class="blog-img blog-hero">
+          <img src="Images/Blog02.png" alt="Smiling woman with curly hair, eyes closed, resting her chin on her shoulder" loading="lazy" decoding="async" />
+        </figure>
+
+        <div class="blog-right">
+          <div class="blog-text">
+            <h4>Welcome to the Life Harmony Wellness Blog</h4>
+            <p>
+              Stay informed, stay healthy! Our <b>Life Harmony</b> Blog is your
+              go-to source for expert insights on nutrition, wellness, and the
+              power of vitamins &amp; supplements.
+            </p>
+          </div>
+        <figure class="blog-img blog-img-3">
+            <img src="Images/Blog03.png" alt="White bowl of yellow supplement capsules on a teal background" loading="lazy" decoding="async" />
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer id="footer">
+      <div class="footer-top">
+        <h2>Stay healthy,<br />stay in touch.</h2>
+        <form class="newsletter" id="newsletter">
+          <p>Join our newsletter for new arrivals, offers and wellness tips.</p>
+          <div class="newsletter-row">
+            <input type="email" placeholder="Your email address" aria-label="Email address" required />
+            <button type="submit">Subscribe</button>
+          </div>
+          <small id="newsletterMsg" role="status"></small>
+        </form>
+      </div>
+
+      <div class="footer-cols">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <i class="ri-heart-pulse-fill"></i>
+            <span>Life<br />Harmony</span>
+          </div>
+          <p>Science-backed vitamins and supplements, made to the highest standards.</p>
+          <div class="socials">
+            <a href="#" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+            <a href="#" aria-label="Facebook"><i class="ri-facebook-circle-line"></i></a>
+            <a href="#" aria-label="X"><i class="ri-twitter-x-line"></i></a>
+            <a href="#" aria-label="YouTube"><i class="ri-youtube-line"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Shop</h5>
+          <a href="#">Vitamins</a>
+          <a href="#">Dietary supplements</a>
+          <a href="#">Sets</a>
+          <a href="#">New arrivals</a>
+        </div>
+
+        <div class="footer-col">
+          <h5>Company</h5>
+          <a href="#">About us</a>
+          <a href="#">Blog</a>
+          <a href="#">Careers</a>
+          <a href="#">Contact</a>
+        </div>
+
+        <div class="footer-col">
+          <h5>Support</h5>
+          <a href="#">FAQ</a>
+          <a href="#">Shipping &amp; returns</a>
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms of service</a>
+        </div>
+      </div>
+
+      <div class="footer-word" aria-hidden="true">LIFE HARMONY</div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 Life Harmony. All rights reserved.</span>
+        <a href="#header" class="to-top">Back to top <i class="ri-arrow-up-line"></i></a>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("newsletter").addEventListener("submit", function (e) {
+        e.preventDefault();
+        document.getElementById("newsletterMsg").textContent = "Thanks for subscribing!";
+        e.target.reset();
+      });
+    </script>
 
     <script>
       document.querySelectorAll("#offer .fav, #pick .fav").forEach(function (btn) {
@@ -368,6 +506,7 @@
       });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.155.0/three.min.js"></script>
+    <script src="loader.js"></script>
     <script src="bottle.js"></script>
     <script src="script.js"></script>
     <script src="offer3d.js"></script>
