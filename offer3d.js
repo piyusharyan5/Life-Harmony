@@ -69,9 +69,38 @@
     fill.position.set(7, 2, 8);
     scene.add(fill);
 
-    const rim = new THREE.DirectionalLight(0xffffff, 0.5);        // edge light from behind
+    const rim = new THREE.DirectionalLight(0xffffff, 0.9);        // edge light from behind
     rim.position.set(3, 4, -9);
     scene.add(rim);
+    const rim2 = new THREE.DirectionalLight(0xffd6f0, 0.6);       // pink kicker from the left
+    rim2.position.set(-8, 3, -6);
+    scene.add(rim2);
+
+    /* soft glow disc behind the bottles + sparkles in the air */
+    function radialTex(stops) {
+        const c = document.createElement("canvas"); c.width = c.height = 128;
+        const g = c.getContext("2d"), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+        stops.forEach(([o, col]) => gr.addColorStop(o, col));
+        g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+        const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+    }
+    const glow = new THREE.Mesh(new THREE.PlaneGeometry(11, 11),
+        new THREE.MeshBasicMaterial({ map: radialTex([[0, "rgba(255,255,255,0.95)"], [0.45, "rgba(255,236,250,0.4)"], [1, "rgba(255,255,255,0)"]]), transparent: true, depthWrite: false }));
+    glow.position.set(0, 0.6, -3);
+    scene.add(glow);
+
+    const SPARKS = 46, sparkPos = new Float32Array(SPARKS * 3), sparkSeed = [];
+    for (let i = 0; i < SPARKS; i++) {
+        sparkPos[i * 3] = (Math.random() - 0.5) * 8; sparkPos[i * 3 + 1] = (Math.random() - 0.5) * 9; sparkPos[i * 3 + 2] = (Math.random() - 0.5) * 4 - 0.5;
+        sparkSeed.push({ ph: Math.random() * 6.28, sp: 0.2 + Math.random() * 0.4 });
+    }
+    const sparkGeo = new THREE.BufferGeometry(); sparkGeo.setAttribute("position", new THREE.BufferAttribute(sparkPos, 3));
+    const sparks = new THREE.Points(sparkGeo, new THREE.PointsMaterial({
+        size: 0.16, map: radialTex([[0, "rgba(255,255,255,1)"], [0.4, "rgba(255,255,255,0.45)"], [1, "rgba(255,255,255,0)"]]),
+        transparent: true, opacity: 0.85, depthWrite: false,
+    }));
+    sparks.frustumCulled = false;
+    scene.add(sparks);
 
 
     /* ----- Bottle shape (units: body radius = 1) ----- */
@@ -149,11 +178,26 @@
     }
     const grain = grainTexture();
 
+    /* painted stand-in label, used only if the label image can't be loaded */
+    function paintLabel(hex, dark, title, sub) {
+        const W = 2048, H = 1024, c = document.createElement("canvas"); c.width = W; c.height = H;
+        const g = c.getContext("2d");
+        g.fillStyle = hex; g.fillRect(0, 0, W, H);
+        g.fillStyle = "rgba(255,255,255,0.16)"; g.beginPath(); g.arc(W / 2, H, 420, 0, 7); g.fill();
+        g.textAlign = "center"; g.fillStyle = dark;
+        const F = '"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif';
+        g.font = "600 46px " + F; g.fillText("Life Harmony", W / 2, 150);
+        g.font = "700 108px " + F; g.fillText(title, W / 2, 400);
+        g.font = "500 42px " + F; g.fillText(sub, W / 2, 470);
+        g.font = "600 30px " + F; g.fillText("HEALTHCARE. REAL RESULTS.", W / 2, 900);
+        const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+    }
     const api = { loaded: 0 };
-    function loadTexture(src) {
-        const done = () => { api.loaded++; if (api.loaded >= 2) stage.classList.add("ready"); };
+    function loadTexture(src, fallback, onFail) {
+        const done = () => { api.loaded++; if (api.loaded >= 2) { stage.classList.add("ready"); stage.classList.add("revealed"); } };
         const t = new THREE.TextureLoader().load(src, done, undefined, () => {
-            console.error("offer3d.js: could not load '" + src + "'. Check that the file is in your Images folder and the page is opened through a local server.");
+            console.warn("offer3d.js: could not load '" + src + "', using a painted label instead.");
+            if (onFail) onFail(fallback());
             done();
         });
         t.colorSpace = THREE.SRGBColorSpace;
@@ -163,7 +207,7 @@
         return t;
     }
 
-    function makeBottle(labelSrc, capColour) {
+    function makeBottle(labelSrc, capColour, fb) {
         const g = new THREE.Group();
 
         const plastic = new THREE.MeshPhysicalMaterial({
@@ -182,7 +226,9 @@
         /* Printed label: the photo supplies the print, lights add the shape.
            Half the print is emissive so colours stay true, half is lit so it curves. */
         const labelGeo = new THREE.CylinderGeometry(1.004, 1.004, LABEL.hi - LABEL.lo, 256, 1, true, -Math.PI, Math.PI * 2);
-        const map = loadTexture(labelSrc);
+        const map = loadTexture(labelSrc, () => paintLabel(fb.hex, fb.dark, fb.title, fb.sub), (tex) => {
+            labelMat.map = tex; labelMat.emissiveMap = tex; labelMat.needsUpdate = true;
+        });
         const labelMat = new THREE.MeshPhysicalMaterial({
             map: map, color: new THREE.Color(0.5, 0.5, 0.5),
             emissive: 0xffffff, emissiveMap: map, emissiveIntensity: 0.6,
@@ -202,8 +248,8 @@
         return holder;
     }
 
-    const blue = makeBottle("Images/label-blue.png", 0xdcdcde);
-    const brown = makeBottle("Images/label-brown.png", 0xcbbfb4);
+    const blue = makeBottle("Images/label-blue.png", 0xdcdcde, { hex: "#8fb4f2", dark: "#12195a", title: "Vitamin D3+K2", sub: "with Coconut MCT Oil" });
+    const brown = makeBottle("Images/label-brown.png", 0xcbbfb4, { hex: "#c9a27e", dark: "#3a2414", title: "Collagen Peptides", sub: "Organic · Chocolate" });
     blue.position.set(-1.05, 0, 0);
     brown.position.set(1.2, -0.1, 0.25);
     brown.scale.setScalar(1.05);
@@ -219,6 +265,18 @@
     hang.add(blue, brown);
     swing.add(hang);
     scene.add(swing);
+
+    /* glossy capsules orbiting the pair */
+    const CR = 0.17, CL = 0.62;
+    const capsuleGeo = new THREE.CapsuleGeometry(CR, CL - 2 * CR, 12, 32);
+    const orbit = [0x5b97e6, 0xf27fb4, 0x58c98a, 0xf3a24f, 0xf4f2f6, 0x5b97e6, 0xf3a24f].map((col, i) => {
+        const m = new THREE.Mesh(capsuleGeo, new THREE.MeshPhysicalMaterial({
+            color: col, roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.5,
+            emissive: new THREE.Color(col).multiplyScalar(0.15),
+        }));
+        scene.add(m);
+        return { m, a: (i / 7) * Math.PI * 2, rx: 2.5 + (i % 3) * 0.35, ry: 1.3 + (i % 2) * 0.5, sp: 0.25 + (i % 4) * 0.06, ph: i * 1.3, ty: (i % 3 - 1) * 0.9 };
+    });
 
     new ResizeObserver(() => {
         const w = stage.clientWidth, h = stage.clientHeight;
@@ -248,10 +306,40 @@
     stage.addEventListener("pointerup", release);
     stage.addEventListener("pointercancel", release);
 
+    const bottles = [blue, brown], bc = new THREE.Vector3();
+
+    /* pointer parallax + only render while the section is on screen */
+    let px = 0, py = 0, tx = 0, ty = 0, visible = true, intro = 0, started = false;
+    stage.addEventListener("pointermove", (e) => {
+        const r = stage.getBoundingClientRect();
+        tx = ((e.clientX - r.left) / r.width - 0.5) * 2; ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
+    });
+    stage.addEventListener("pointerleave", () => { tx = ty = 0; });
+    if ("IntersectionObserver" in window) {
+        new IntersectionObserver((en) => { visible = en[0].isIntersecting; if (visible) started = true; }, { threshold: 0.15 }).observe(stage);
+    } else started = true;
+
     const clock = new THREE.Clock();
     (function render() {
+        requestAnimationFrame(render);
+        if (!visible) return;
         const t = clock.getElapsedTime();
         const k = reduceMotion.matches ? 0 : 1;
+        if (started) intro = Math.min(1, intro + 0.014);                     // bottles glide in the first time you scroll to them
+        const ie = 1 - Math.pow(1 - intro, 3);
+        px += (tx - px) * 0.06; py += (ty - py) * 0.06;
+        camera.position.x = px * 0.7; camera.position.y = 0.2 - py * 0.4; camera.lookAt(0, 0.2, 0);
+        hang.position.y = -PIVOT_Y - (1 - ie) * 5;
+        sparks.rotation.y = t * 0.03 * k;
+        sparks.material.opacity = 0.55 + 0.3 * Math.sin(t * 1.7);
+        glow.scale.setScalar(1 + 0.05 * Math.sin(t * 0.9) * k);
+        for (const o of orbit) {
+            const a = o.a + t * o.sp * k;
+            // wide ring: well in front of and behind the bottles, so it never cuts through them
+            o.m.position.set(Math.cos(a) * o.rx * 0.95 + 0.1, o.ty + Math.sin(a * 1.3 + o.ph) * 0.35 + Math.sin(a) * o.ry * 0.25, Math.sin(a) * 2.4 + 0.1);
+            o.m.rotation.set(t * 0.6 + o.ph, t * 0.4, a);
+            o.m.scale.setScalar(ie);
+        }
 
         if (!dragging) {
             drag += dragVel;
@@ -267,7 +355,23 @@
         brown.rotation.y = Math.sin(t * 0.7 + 1.4) * 0.5 * k + drag;
         brown.rotation.z = baseLean + Math.sin(t * 1.15 + 0.6) * 0.03 * k;
 
+        /* safety: treat each bottle as a vertical cylinder (following the swing) and push any capsule
+           that would end up inside it out to the surface, so capsules can never appear inside a bottle */
+        scene.updateMatrixWorld(true);
+        for (const b of bottles) {
+            b.getWorldPosition(bc);
+            const s = b.scale.x, halfH = (CAP_HI / 2) * s + 0.45, minR = s + 0.31 + 0.22;
+            for (const o of orbit) {
+                const p = o.m.position;
+                if (Math.abs(p.y - bc.y) > halfH) continue;
+                let dx = p.x - bc.x, dz = p.z - bc.z;
+                const len = Math.hypot(dx, dz);
+                if (len >= minR) continue;
+                if (len < 1e-4) { dx = 0; dz = 1; } else { dx /= len; dz /= len; }
+                p.x = bc.x + dx * minR; p.z = bc.z + dz * minR;
+            }
+        }
+
         renderer.render(scene, camera);
-        requestAnimationFrame(render);
     })();
 })();

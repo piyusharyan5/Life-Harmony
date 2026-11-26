@@ -488,3 +488,65 @@ document.getElementById("newsletter").addEventListener("submit", function (e) {
           btn.classList.toggle("on");
         });
       });
+
+/* ---------- Extra polish: scroll progress, reveals, cart counter, card tilt ---------- */
+(function () {
+  var bar = document.getElementById("scroll-progress");
+  if (bar) {
+    var upd = function () {
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = "scaleX(" + (h > 0 ? Math.min(1, window.scrollY / h) : 0) + ")";
+    };
+    window.addEventListener("scroll", upd, { passive: true });
+    upd();
+  }
+
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* sections and cards ease in as they scroll into view */
+  var targets = document.querySelectorAll(".arrivals-head, .product-card, .offer-info, .offer-side, .pick-head, .blog-title, .blog-grid > *, .footer-top");
+  if ("IntersectionObserver" in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12 });
+    targets.forEach(function (el, i) {
+      el.classList.add("reveal");
+      el.style.setProperty("--d", (i % 4) * 70 + "ms");
+      io.observe(el);
+    });
+  }
+
+  /* add to cart: counter bump + toast */
+  var count = 0, countEl = document.getElementById("cart-count"), toast = document.getElementById("toast"), tt;
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest(".add-cart");
+    if (!btn) return;
+    count++;
+    countEl.textContent = count;
+    countEl.classList.add("show");
+    var cart = document.getElementById("cart");
+    cart.classList.remove("bump"); void cart.offsetWidth; cart.classList.add("bump");
+    var card = btn.closest(".product-card, .offer-info");
+    var name = card && card.querySelector("h4, h3");
+    toast.textContent = (name ? name.textContent.trim() : "Item") + " added to cart";
+    toast.classList.add("on");
+    clearTimeout(tt);
+    tt = setTimeout(function () { toast.classList.remove("on"); }, 1900);
+    btn.textContent = "Added ✓";
+    setTimeout(function () { btn.textContent = "Add to cart"; }, 1400);
+  });
+
+  /* gentle 3D tilt on product cards (mouse only) */
+  if (!reduce && window.matchMedia("(hover: hover)").matches) {
+    document.querySelectorAll(".product-card").forEach(function (card) {
+      card.addEventListener("pointermove", function (e) {
+        var r = card.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = "perspective(900px) rotateY(" + x * 7 + "deg) rotateX(" + -y * 7 + "deg) translateY(-4px)";
+      });
+      card.addEventListener("pointerleave", function () { card.style.transform = ""; });
+    });
+  }
+})();
